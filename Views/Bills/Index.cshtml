@@ -1,0 +1,55 @@
+@model List<Bill>
+@{
+    ViewData["Title"] = "Billing";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Billing</h2>
+        <p class="page-subtitle">
+            Received: @(((decimal)ViewBag.TotalRevenue).ToString("N2")) EGP ·
+            Outstanding: @(((decimal)ViewBag.PendingAmount).ToString("N2")) EGP
+        </p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Bill</a>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Issue Date</th><th>Due Date</th><th>Patient</th><th>Items</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-secondary py-4">No bills found.</td></tr>
+                }
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td>@b.IssueDate.ToString("dd MMM yyyy")</td>
+                        <td>@(b.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                        <td>@b.Patient?.FullName</td>
+                        <td>@b.Items.Count item(s)</td>
+                        <td>@b.Amount.ToString("N2") EGP</td>
+                        <td>@b.Payments.Sum(payment => payment.Amount).ToString("N2") EGP</td>
+                        <td>@Math.Max(0, b.Amount - b.Payments.Sum(payment => payment.Amount)).ToString("N2") EGP</td>
+                        <td><span class="badge">@b.Status</span></td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@b.BillId" class="btn btn-info btn-sm">View</a>
+                            @if (b.PaymentStatus != "Paid" && b.PaymentStatus != "Cancelled")
+                            {
+                                <form asp-action="MarkPaid" asp-route-id="@b.BillId" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">Pay balance</button>
+                                </form>
+                            }
+                            <a asp-action="Edit" asp-route-id="@b.BillId" class="btn btn-secondary btn-sm">Edit</a>
+                            <form asp-action="Delete" asp-route-id="@b.BillId" method="post" class="d-inline" onsubmit="return confirm('Delete this bill?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

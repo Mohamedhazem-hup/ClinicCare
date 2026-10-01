@@ -1,0 +1,73 @@
+@model MedicalRecord
+@{
+    ViewData["Title"] = "Edit Medical Record";
+}
+
+<div class="page-header">
+    <div><h2 class="page-title">Edit Medical Record</h2></div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="MedicalRecordId" />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Patient</label>
+                <select name="PatientId" class="form-select" required>
+                    @foreach (var p in (List<Patient>)ViewBag.Patients)
+                    {
+                        <option value="@p.Id" selected="@(p.Id == Model.PatientId)">@p.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Doctor</label>
+                <select name="DoctorId" class="form-select" required>
+                    @foreach (var d in (List<Doctor>)ViewBag.Doctors)
+                    {
+                        <option value="@d.Id" selected="@(d.Id == Model.DoctorId)">@d.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Visit Date</label>
+                <input type="date" name="VisitDate" class="form-control" value="@Model.VisitDate.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Chief Complaint</label>
+                <textarea name="ChiefComplaint" class="form-control">@Model.ChiefComplaint</textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Symptoms</label>
+                <textarea name="Symptoms" class="form-control">@Model.Symptoms</textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Blood Pressure</label>
+                <input name="BloodPressure" class="form-control" value="@Model.BloodPressure" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Temperature (°C)</label>
+                <input name="Temperature" type="number" step="0.1" class="form-control" value="@Model.Temperature" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Weight (kg)</label>
+                <input name="Weight" type="number" step="0.1" class="form-control" value="@Model.Weight" />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Diagnosis</label>
+                <textarea name="Diagnosis" class="form-control" required>@Model.Diagnosis</textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Treatment</label>
+                <textarea name="Treatment" class="form-control">@Model.Treatment</textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Notes</label>
+                <textarea name="Notes" class="form-control">@Model.Notes</textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-check"></i> Save Changes</button>
+    </form>
+</div>

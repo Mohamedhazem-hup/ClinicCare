@@ -1,0 +1,40 @@
+@model List<Prescription>
+@{
+    ViewData["Title"] = "My Prescriptions";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">My Prescriptions</h2>
+        <p class="page-subtitle">@Model.Count prescriptions on file</p>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Date</th><th>Doctor</th><th>Medicines</th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="3" class="text-center text-secondary py-4">No prescriptions yet.</td></tr>
+                }
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.DateIssued.ToString("dd MMM yyyy")</td>
+                        <td>@p.Doctor?.FullName</td>
+                        <td>
+                            <ul class="mb-0 ps-3">
+                                @foreach (var item in p.Items)
+                                {
+                                    <li>@item.MedicineName, @item.Dosage, @item.Frequency for @item.Duration</li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

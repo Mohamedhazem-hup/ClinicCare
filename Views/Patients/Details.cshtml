@@ -1,0 +1,129 @@
+@model Patient
+@{
+    ViewData["Title"] = "Patient Details";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">@Model.FullName</h2>
+        <p class="page-subtitle">Patient profile and history</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="profile-card mb-3">
+    <div class="d-flex align-items-center gap-3 mb-3">
+        <div class="profile-avatar">@Model.FullName.Substring(0,1)</div>
+        <div>
+            <div class="profile-name-large">@Model.FullName</div>
+            <div class="profile-meta">
+                @(Model.Gender ?? "-") · @(Model.BloodType ?? "No blood type") · @(Model.Phone ?? "No phone")
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"><strong>Date of Birth:</strong> @(Model.DateOfBirth?.ToString("dd MMM yyyy") ?? "-")</div>
+        <div class="col-md-4"><strong>Address:</strong> @(Model.Address ?? "-")</div>
+        <div class="col-md-4"><strong>Registered:</strong> @Model.CreatedAt.ToString("dd MMM yyyy")</div>
+        <div class="col-md-4"><strong>Emergency Contact:</strong> @(Model.EmergencyContact ?? "-")</div>
+    </div>
+</div>
+
+<div class="content-card mb-3">
+    <div class="card-header-modern"><h3>Appointments</h3></div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Date</th><th>Doctor</th><th>Status</th></tr></thead>
+            <tbody>
+                @if (!Model.Appointments.Any())
+                {
+                    <tr><td colspan="3" class="text-center text-secondary py-3">No appointments yet.</td></tr>
+                }
+                @foreach (var a in Model.Appointments.OrderByDescending(a => a.AppointmentDate))
+                {
+                    <tr>
+                        <td>@a.AppointmentDate.ToString("dd MMM yyyy HH:mm")</td>
+                        <td>@a.Doctor?.FullName</td>
+                        <td><span class="badge">@a.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="content-card mb-3">
+    <div class="card-header-modern"><h3>Medical Records</h3></div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Visit Date</th><th>Doctor</th><th>Diagnosis</th></tr></thead>
+            <tbody>
+                @if (!Model.MedicalRecords.Any())
+                {
+                    <tr><td colspan="3" class="text-center text-secondary py-3">No medical records yet.</td></tr>
+                }
+                @foreach (var m in Model.MedicalRecords.OrderByDescending(m => m.VisitDate))
+                {
+                    <tr>
+                        <td>@m.VisitDate.ToString("dd MMM yyyy")</td>
+                        <td>@m.Doctor?.FullName</td>
+                        <td>@m.Diagnosis</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="content-card mb-3">
+    <div class="card-header-modern"><h3>Prescriptions</h3></div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Date</th><th>Doctor</th><th>Medicines</th></tr></thead>
+            <tbody>
+                @if (!Model.Prescriptions.Any())
+                {
+                    <tr><td colspan="3" class="text-center text-secondary py-3">No prescriptions yet.</td></tr>
+                }
+                @foreach (var prescription in Model.Prescriptions.OrderByDescending(p => p.Date))
+                {
+                    <tr>
+                        <td>@prescription.Date.ToString("dd MMM yyyy")</td>
+                        <td>@prescription.Doctor?.FullName</td>
+                        <td>
+                            <ul class="mb-0 ps-3">
+                                @foreach (var item in prescription.Items)
+                                {
+                                    <li>@item.MedicineName · @item.Dosage · @item.Frequency · @item.Duration</li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="card-header-modern"><h3>Bills</h3></div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Issue Date</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+                @if (!Model.Bills.Any())
+                {
+                    <tr><td colspan="3" class="text-center text-secondary py-3">No bills yet.</td></tr>
+                }
+                @foreach (var b in Model.Bills.OrderByDescending(b => b.IssueDate))
+                {
+                    <tr>
+                        <td>@b.IssueDate.ToString("dd MMM yyyy")</td>
+                        <td>@b.Amount.ToString("N2") EGP</td>
+                        <td><span class="badge">@b.Status</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

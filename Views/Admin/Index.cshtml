@@ -1,0 +1,103 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-welcome">
+    <h1>Good morning 👋</h1>
+    <p>Here's what's happening in your clinic today.</p>
+</div>
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div>
+                <div class="stat-title">TOTAL PATIENTS</div>
+                <div class="stat-value">@ViewBag.Patients</div>
+                <div class="stat-footer">Registered patients</div>
+            </div>
+            <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div>
+                <div class="stat-title">DOCTORS</div>
+                <div class="stat-value">@ViewBag.Doctors</div>
+                <div class="stat-footer">Medical professionals</div>
+            </div>
+            <div class="stat-icon green"><i class="fa-solid fa-user-doctor"></i></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div>
+                <div class="stat-title">APPOINTMENTS</div>
+                <div class="stat-value">@ViewBag.Appointments</div>
+                <div class="stat-footer">Total appointments</div>
+            </div>
+            <div class="stat-icon orange"><i class="fa-regular fa-calendar-days"></i></div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <div>
+                <div class="stat-title">TOTAL REVENUE</div>
+                <div class="stat-value">@(((decimal)ViewBag.TotalRevenue).ToString("N0"))</div>
+                <div class="stat-footer">Paid bills · EGP</div>
+            </div>
+            <div class="stat-icon purple"><i class="fa-solid fa-chart-line"></i></div>
+        </div>
+    </div>
+
+</div>
+
+<div class="content-card">
+    <div class="card-header-modern">
+        <div>
+            <h3>Quick Actions</h3>
+            <span>Access your clinic modules</span>
+        </div>
+        <a asp-controller="Admin" asp-action="CreateReceptionist" class="btn btn-secondary">
+            <i class="fa-solid fa-user-plus"></i> New Receptionist
+        </a>
+    </div>
+
+    <div class="card-body-modern">
+        <div class="row g-3">
+            <div class="col-md-4 col-lg-2">
+                <a asp-controller="Patients" asp-action="Index" class="btn btn-light w-100 py-3">
+                    <i class="fa-solid fa-users text-primary d-block mb-2 fs-5"></i> Patients
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <a asp-controller="Doctors" asp-action="Index" class="btn btn-light w-100 py-3">
+                    <i class="fa-solid fa-user-doctor text-success d-block mb-2 fs-5"></i> Doctors
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <a asp-controller="Appointments" asp-action="Index" class="btn btn-light w-100 py-3">
+                    <i class="fa-regular fa-calendar-days text-warning d-block mb-2 fs-5"></i> Appointments
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <a asp-controller="MedicalRecords" asp-action="Index" class="btn btn-light w-100 py-3">
+                    <i class="fa-solid fa-file-medical text-danger d-block mb-2 fs-5"></i> Records
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <a asp-controller="Prescriptions" asp-action="Index" class="btn btn-light w-100 py-3">
+                    <i class="fa-solid fa-prescription-bottle-medical text-primary d-block mb-2 fs-5"></i> Prescriptions
+                </a>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <a asp-controller="Bills" asp-action="Index" class="btn btn-light w-100 py-3">
+                    <i class="fa-solid fa-receipt text-success d-block mb-2 fs-5"></i> Billing
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

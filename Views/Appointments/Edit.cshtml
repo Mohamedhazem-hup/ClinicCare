@@ -1,0 +1,68 @@
+@model Appointment
+@{
+    ViewData["Title"] = "Edit Appointment";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Edit Appointment</h2>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger modern-alert mb-3">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>@ViewData.ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage</span>
+        </div>
+    }
+
+    <form asp-action="Edit" asp-route-id="@Model.AppointmentId" method="post">
+        <input type="hidden" asp-for="AppointmentId" />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Patient</label>
+                <select name="PatientId" class="form-select" required>
+                    @foreach (var p in (List<Patient>)ViewBag.Patients)
+                    {
+                        <option value="@p.Id" selected="@(p.Id == Model.PatientId)">@p.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Doctor</label>
+                <select name="DoctorId" class="form-select" required>
+                    @foreach (var d in (List<Doctor>)ViewBag.Doctors)
+                    {
+                        <option value="@d.Id" selected="@(d.Id == Model.DoctorId)">@d.FullName (@d.Specialization)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Date &amp; Time</label>
+                <input type="datetime-local" name="AppointmentDate" class="form-control" value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Duration (minutes)</label>
+                <input type="number" name="DurationMinutes" class="form-control" min="5" max="240" value="@Model.DurationMinutes" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Status</label>
+                <select name="Status" class="form-select">
+                    @foreach (var s in new[] { "Scheduled", "Completed", "Cancelled", "No Show" })
+                    {
+                        <option value="@s" selected="@(s == Model.Status)">@s</option>
+                    }
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Reason</label>
+                <textarea name="Reason" class="form-control">@Model.Reason</textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-check"></i> Save Changes</button>
+    </form>
+</div>

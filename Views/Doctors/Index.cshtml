@@ -1,0 +1,58 @@
+@model List<Doctor>
+@{
+    ViewData["Title"] = "Doctors";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Doctors</h2>
+        <p class="page-subtitle">@Model.Count medical professionals</p>
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Doctor</a>
+    }
+</div>
+
+<div class="content-card mb-3">
+    <div class="card-body-modern">
+        <form method="get" class="d-flex gap-2">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by name or specialization..." style="max-width:320px;" />
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>Name</th><th>Specialization</th><th>Phone</th><th></th></tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="4" class="text-center text-secondary py-4">No doctors found.</td></tr>
+                }
+                @foreach (var d in Model)
+                {
+                    <tr>
+                        <td><strong>@d.FullName</strong></td>
+                        <td><span class="badge bg-primary">@d.Specialization</span></td>
+                        <td>@(d.Phone ?? "-")</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@d.Id" class="btn btn-info btn-sm">View</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@d.Id" class="btn btn-secondary btn-sm">Edit</a>
+                                <form asp-action="Delete" asp-route-id="@d.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this doctor?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

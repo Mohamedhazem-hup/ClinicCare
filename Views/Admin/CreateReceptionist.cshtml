@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "New Receptionist";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">New Receptionist Account</h2>
+        <p class="page-subtitle">Create login credentials for front-desk staff.</p>
+    </div>
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger modern-alert mb-3">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>@ViewData.ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage</span>
+        </div>
+    }
+
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="fullName" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required minlength="6" />
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
+</div>

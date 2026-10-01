@@ -1,0 +1,35 @@
+@model Prescription
+@{
+    ViewData["Title"] = "Prescription";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Prescription</h2>
+        <p class="page-subtitle">@Model.DateIssued.ToString("dd MMM yyyy")</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="profile-card">
+    <div class="row g-3">
+        <div class="col-md-4"><strong>Patient:</strong> @Model.Patient?.FullName</div>
+        <div class="col-md-4"><strong>Doctor:</strong> @Model.Doctor?.FullName</div>
+        <div class="col-md-4"><strong>Date Issued:</strong> @Model.DateIssued.ToString("dd MMM yyyy")</div>
+        <div class="col-12"><strong>Notes:</strong> @(Model.Notes ?? "-")</div>
+    </div>
+</div>
+
+<div class="table-container mt-3">
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th><th>Duration</th><th>Instructions</th></tr></thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr><td>@item.MedicineName</td><td>@item.Dosage</td><td>@item.Frequency</td><td>@item.Duration</td><td>@(item.Instructions ?? "-")</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

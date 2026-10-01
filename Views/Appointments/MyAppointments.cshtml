@@ -1,0 +1,36 @@
+@model List<Appointment>
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">My Appointments</h2>
+        <p class="page-subtitle">@Model.Count appointments on file</p>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>Date &amp; Time</th><th>Doctor</th><th>Status</th><th>Reason</th></tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="4" class="text-center text-secondary py-4">You have no appointments yet. Please contact reception to book one.</td></tr>
+                }
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@a.AppointmentDate.ToString("dd MMM yyyy, HH:mm")</td>
+                        <td>@a.Doctor?.FullName (@a.Doctor?.Specialization)</td>
+                        <td><span class="badge">@a.Status</span></td>
+                        <td>@(a.Reason ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

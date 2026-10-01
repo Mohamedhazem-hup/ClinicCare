@@ -1,0 +1,45 @@
+@model Appointment
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Appointment</h2>
+        <p class="page-subtitle">@Model.AppointmentDate.ToString("dd MMM yyyy, HH:mm")</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="profile-card">
+    <div class="row g-3">
+        <div class="col-md-4"><strong>Patient:</strong> @Model.Patient?.FullName</div>
+        <div class="col-md-4"><strong>Doctor:</strong> @Model.Doctor?.FullName</div>
+        <div class="col-md-4"><strong>Status:</strong> <span class="badge">@Model.Status</span></div>
+        <div class="col-md-4"><strong>Date &amp; Time:</strong> @Model.AppointmentDate.ToString("dd MMM yyyy, HH:mm")</div>
+        <div class="col-md-4"><strong>Duration:</strong> @Model.DurationMinutes minutes</div>
+        <div class="col-md-8"><strong>Notes:</strong> @(Model.Notes ?? "-")</div>
+    </div>
+</div>
+
+@if (User.IsInRole("Doctor") && Model.Status == "Checked-In")
+{
+    <a asp-controller="MedicalRecords" asp-action="Create"
+       asp-route-patientId="@Model.PatientId" asp-route-appointmentId="@Model.AppointmentId"
+       class="btn btn-primary mt-3"><i class="fa-solid fa-file-medical"></i> Record examination</a>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Receptionist"))
+{
+    <form asp-action="UpdateStatus" method="post" class="form-card mt-3">
+        <input type="hidden" name="id" value="@Model.AppointmentId" />
+        <label class="form-label" for="status">Status</label>
+        <select name="status" id="status" class="form-select mb-3">
+            @foreach (var status in new[] { "Scheduled", "Waiting", "Checked-In", "Completed", "Cancelled", "No Show" })
+            {
+                <option value="@status" selected="@(status == Model.Status)">@status</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary">Update Status</button>
+    </form>
+}

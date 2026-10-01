@@ -1,0 +1,44 @@
+@model List<MedicalRecord>
+@{
+    ViewData["Title"] = "Medical Records";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Medical Records</h2>
+        <p class="page-subtitle">@Model.Count records</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Record</a>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>Visit Date</th><th>Patient</th><th>Doctor</th><th>Diagnosis</th><th></th></tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-secondary py-4">No records found.</td></tr>
+                }
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td>@m.VisitDate.ToString("dd MMM yyyy")</td>
+                        <td>@m.Patient?.FullName</td>
+                        <td>@m.Doctor?.FullName</td>
+                        <td>@m.Diagnosis</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@m.Id" class="btn btn-info btn-sm">View</a>
+                            <a asp-action="Edit" asp-route-id="@m.Id" class="btn btn-secondary btn-sm">Edit</a>
+                            <form asp-action="Delete" asp-route-id="@m.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this record?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

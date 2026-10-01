@@ -1,0 +1,76 @@
+@model Patient
+@{
+    ViewData["Title"] = "Add Patient";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Add Patient</h2>
+        <p class="page-subtitle">Register a new patient in the system.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger modern-alert"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" required />
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" type="email" required />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" type="email" required />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="DateOfBirth" class="form-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" type="date" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Gender" class="form-label"></label>
+                <select asp-for="Gender" class="form-select">
+                    <option value="">-- Select --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="BloodType" class="form-label"></label>
+                <select asp-for="BloodType" class="form-select">
+                    <option value="">-- Select --</option>
+                    @foreach (var bt in new[] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" })
+                    {
+                        <option value="@bt">@bt</option>
+                    }
+                </select>
+            </div>
+            <div class="col-12">
+                <label asp-for="Address" class="form-label"></label>
+                <textarea asp-for="Address" class="form-control"></textarea>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="EmergencyContact" class="form-label"></label>
+                <input asp-for="EmergencyContact" class="form-control" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-check"></i> Save Patient</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

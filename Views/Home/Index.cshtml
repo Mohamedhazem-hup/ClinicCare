@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] = "Home";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+}
+
+@if (!isAuthenticated)
+{
+    <section class="hero-section">
+        <h1>Run your clinic smarter with ClinicCare</h1>
+        <p>
+            One platform for patients, doctors, receptionists and admins &mdash;
+            appointments, medical records, prescriptions and billing, all in one place.
+        </p>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-primary" style="position:relative;z-index:2;display:inline-block;margin-top:14px;">
+            Create a patient account
+        </a>
+    </section>
+
+    <div class="row g-3 mt-4">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-regular fa-calendar-check"></i></div>
+                <h4>Smart Scheduling</h4>
+                <p>Book appointments without double-booking a doctor's time slot.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-file-medical"></i></div>
+                <h4>Medical History</h4>
+                <p>Doctors see a patient's full visit, diagnosis and treatment history instantly.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-receipt"></i></div>
+                <h4>Billing &amp; Reports</h4>
+                <p>Track bills, payments and clinic revenue from one dashboard.</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="dashboard-welcome">
+        <h1>Welcome back, @User.Identity!.Name 👋</h1>
+        <p>Use the sidebar to navigate to your modules.</p>
+    </div>
+}

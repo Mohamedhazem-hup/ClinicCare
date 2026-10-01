@@ -1,0 +1,44 @@
+@model List<Prescription>
+@{
+    ViewData["Title"] = "Prescriptions";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Prescriptions</h2>
+        <p class="page-subtitle">@Model.Count prescriptions issued</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Prescription</a>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>Date</th><th>Patient</th><th>Doctor</th><th>Medications</th><th></th></tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-secondary py-4">No prescriptions found.</td></tr>
+                }
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.DateIssued.ToString("dd MMM yyyy")</td>
+                        <td>@p.Patient?.FullName</td>
+                        <td>@p.Doctor?.FullName</td>
+                        <td>@p.Items.Count medicine(s)</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-info btn-sm">View</a>
+                            <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-secondary btn-sm">Edit</a>
+                            <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this prescription?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

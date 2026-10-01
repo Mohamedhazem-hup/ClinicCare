@@ -1,0 +1,88 @@
+@model MedicalRecord
+@{
+    ViewData["Title"] = "Add Medical Record";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Add Medical Record</h2>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger modern-alert mb-3">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>@ViewData.ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage</span>
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
+        @if (Model.AppointmentId.HasValue)
+        {
+            <input type="hidden" asp-for="AppointmentId" />
+        }
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Patient</label>
+                <select name="PatientId" class="form-select" required>
+                    <option value="">-- Select Patient --</option>
+                    @foreach (var p in (List<Patient>)ViewBag.Patients)
+                    {
+                        <option value="@p.Id" selected="@(p.Id == Model.PatientId)">@p.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Doctor</label>
+                <select name="DoctorId" class="form-select" required>
+                    <option value="">-- Select Doctor --</option>
+                    @foreach (var d in (List<Doctor>)ViewBag.Doctors)
+                    {
+                        <option value="@d.Id" selected="@(d.Id == Model.DoctorId)">@d.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Visit Date</label>
+                <input type="date" name="VisitDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Chief Complaint</label>
+                <textarea name="ChiefComplaint" class="form-control"></textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Symptoms</label>
+                <textarea name="Symptoms" class="form-control"></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Blood Pressure</label>
+                <input name="BloodPressure" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Temperature (°C)</label>
+                <input name="Temperature" type="number" step="0.1" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Weight (kg)</label>
+                <input name="Weight" type="number" step="0.1" class="form-control" />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Diagnosis</label>
+                <textarea name="Diagnosis" class="form-control" required></textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Treatment</label>
+                <textarea name="Treatment" class="form-control"></textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Notes</label>
+                <textarea name="Notes" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-check"></i> Save Record</button>
+    </form>
+</div>

@@ -1,0 +1,46 @@
+@model Doctor
+@{
+    ViewData["Title"] = "Add Doctor";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Add Doctor</h2>
+        <p class="page-subtitle">Creates a doctor profile and a login account.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger modern-alert mb-3">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>@ViewData.ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage</span>
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Specialty" class="form-label"></label>
+                <input asp-for="Specialty" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" />
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <label class="form-label">Login Email</label>
+                <input asp-for="Email" class="form-control" required />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-check"></i> Create Doctor</button>
+    </form>
+</div>

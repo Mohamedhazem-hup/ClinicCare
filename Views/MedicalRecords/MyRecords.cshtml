@@ -1,0 +1,48 @@
+@model List<MedicalRecord>
+@{
+    ViewData["Title"] = "My Medical Records";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">My Medical Records</h2>
+        <p class="page-subtitle">@Model.Count visits on file</p>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        <div class="empty-icon"><i class="fa-solid fa-file-medical"></i></div>
+        <h4>No records yet</h4>
+        <p>Your medical history will appear here after your first visit.</p>
+    </div>
+}
+else
+{
+    @foreach (var m in Model)
+    {
+        <div class="content-card mb-3">
+            <div class="card-header-modern">
+                <div>
+                    <h3>@m.VisitDate.ToString("dd MMM yyyy")</h3>
+                    <span>Dr. @m.Doctor?.FullName</span>
+                </div>
+            </div>
+            <div class="card-body-modern">
+                <p><strong>Diagnosis:</strong> @m.Diagnosis</p>
+                <p><strong>Treatment:</strong> @(m.Treatment ?? "-")</p>
+                @if (m.Prescriptions.Any())
+                {
+                    <p><strong>Prescriptions:</strong></p>
+                    <ul>
+                        @foreach (var p in m.Prescriptions)
+                        {
+                            <li>@p.Medications</li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    }
+}

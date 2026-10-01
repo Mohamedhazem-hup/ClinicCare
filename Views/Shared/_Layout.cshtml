@@ -1,0 +1,273 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var userName = User.Identity?.Name ?? "User";
+
+    string Initials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return "U";
+
+        var parts = name.Split(new[] { '@', '.', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length >= 2)
+            return $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[1][0])}";
+
+        return char.ToUpper(name[0]).ToString();
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Clinic Management</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+
+@if (isAuthenticated)
+{
+    <div class="app-shell">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-brand">
+                <a asp-controller="Home" asp-action="Index" class="brand-link">
+                    <span class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+                    <span class="brand-text">Clinic<span>Care</span></span>
+                </a>
+                <button type="button" class="sidebar-close" id="sidebarClose">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-label">MAIN MENU</div>
+
+                <nav class="sidebar-nav">
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="sidebar-link @(currentController == "Admin" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-grid-2"></i></span>
+                            <span>Dashboard</span>
+                        </a>
+                        <a asp-controller="Reports" asp-action="Index" class="sidebar-link @(currentController == "Reports" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-chart-column"></i></span>
+                            <span>Reports</span>
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Doctor"))
+                    {
+                        <a asp-controller="Doctors" asp-action="Dashboard" class="sidebar-link @(currentController == "Doctors" && currentAction == "Dashboard" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                            <span>My Dashboard</span>
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Receptionist") || User.IsInRole("Doctor"))
+                    {
+                        <a asp-controller="Patients" asp-action="Index" class="sidebar-link @(currentController == "Patients" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                            <span>Patients</span>
+                        </a>
+
+                        <a asp-controller="Doctors" asp-action="Index" class="sidebar-link @(currentController == "Doctors" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-user-doctor"></i></span>
+                            <span>Doctors</span>
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Receptionist") || User.IsInRole("Doctor"))
+                    {
+                        <a asp-controller="Appointments" asp-action="Index" class="sidebar-link @(currentController == "Appointments" && currentAction != "MyAppointments" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-regular fa-calendar-days"></i></span>
+                            <span>Appointments</span>
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                    {
+                        <a asp-controller="MedicalRecords" asp-action="Index" class="sidebar-link @(currentController == "MedicalRecords" && currentAction != "MyRecords" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-file-medical"></i></span>
+                            <span>Medical Records</span>
+                        </a>
+
+                        <a asp-controller="Prescriptions" asp-action="Index" class="sidebar-link @(currentController == "Prescriptions" && currentAction != "MyPrescriptions" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-prescription-bottle-medical"></i></span>
+                            <span>Prescriptions</span>
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                    {
+                        <a asp-controller="Bills" asp-action="Index" class="sidebar-link @(currentController == "Bills" && currentAction != "MyBills" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-receipt"></i></span>
+                            <span>Billing</span>
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Patient"))
+                    {
+                        <a asp-controller="Appointments" asp-action="MyAppointments" class="sidebar-link @(currentAction == "MyAppointments" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-regular fa-calendar-check"></i></span>
+                            <span>My Appointments</span>
+                        </a>
+
+                        <a asp-controller="MedicalRecords" asp-action="MyMedicalHistory" class="sidebar-link @(currentAction == "MyMedicalHistory" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-file-medical"></i></span>
+                            <span>My Medical Records</span>
+                        </a>
+
+                        <a asp-controller="Prescriptions" asp-action="MyPrescriptions" class="sidebar-link @(currentAction == "MyPrescriptions" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-prescription-bottle-medical"></i></span>
+                            <span>My Prescriptions</span>
+                        </a>
+
+                        <a asp-controller="Bills" asp-action="MyBills" class="sidebar-link @(currentAction == "MyBills" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-receipt"></i></span>
+                            <span>My Bills</span>
+                        </a>
+
+                        <a asp-controller="Bills" asp-action="MyPayments" class="sidebar-link @(currentAction == "MyPayments" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-credit-card"></i></span>
+                            <span>My Payments</span>
+                        </a>
+                    }
+
+                </nav>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-label">ACCOUNT</div>
+
+                <div class="sidebar-user">
+                    <div class="avatar">@Initials(userName)</div>
+                    <div class="user-info">
+                        <strong>@userName</strong>
+                        <small>
+                            @if (User.IsInRole("Admin")) { <span>Administrator</span> }
+                            else if (User.IsInRole("Doctor")) { <span>Doctor</span> }
+                            else if (User.IsInRole("Receptionist")) { <span>Receptionist</span> }
+                            else { <span>Patient</span> }
+                        </small>
+                    </div>
+                </div>
+
+                <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
+                    <button type="submit" class="sidebar-link logout-btn">
+                        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+
+        </aside>
+
+        <!-- MAIN AREA -->
+        <div class="main-area">
+
+            <header class="topbar">
+                <button type="button" class="mobile-menu-btn" id="sidebarToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="topbar-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search anything..." />
+                    <span class="search-shortcut">Ctrl K</span>
+                </div>
+
+                <div class="topbar-actions">
+                    <button type="button" class="icon-button" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+
+                    <div class="topbar-divider"></div>
+
+                    <div class="topbar-profile">
+                        <div class="avatar avatar-small">@Initials(userName)</div>
+                        <div class="profile-name">@userName</div>
+                        <i class="fa-solid fa-chevron-down profile-arrow"></i>
+                    </div>
+                </div>
+            </header>
+
+            <main class="page-content">
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success modern-alert">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>@TempData["Success"]</span>
+                    </div>
+                }
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger modern-alert">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>@TempData["Error"]</span>
+                    </div>
+                }
+
+                @RenderBody()
+
+            </main>
+
+            <footer class="app-footer">
+                <span>© @DateTime.Now.Year ClinicCare</span>
+                <span>Clinic Management System</span>
+            </footer>
+
+        </div>
+    </div>
+}
+else
+{
+    <div class="public-layout">
+        <header class="public-header">
+            <a asp-controller="Home" asp-action="Index" class="brand-link">
+                <span class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+                <span class="brand-text">Clinic<span>Care</span></span>
+            </a>
+
+            <a href="/Identity/Account/Login" class="public-login-btn">
+                Sign In <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </header>
+
+        <main class="public-content">
+            @RenderBody()
+        </main>
+    </div>
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

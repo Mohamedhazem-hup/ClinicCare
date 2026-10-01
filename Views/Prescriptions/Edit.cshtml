@@ -1,0 +1,82 @@
+@model Prescription
+@{
+    ViewData["Title"] = "Edit Prescription";
+    var items = Model.Items.Any() ? Model.Items.ToList() : new List<PrescriptionItem> { new() };
+}
+
+<div class="page-header">
+    <div><h2 class="page-title">Edit Prescription</h2></div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Patient</label>
+                <select name="PatientId" class="form-select" required>
+                    @foreach (var p in (List<Patient>)ViewBag.Patients)
+                    {
+                        <option value="@p.Id" selected="@(p.Id == Model.PatientId)">@p.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Doctor</label>
+                <select name="DoctorId" class="form-select" required>
+                    @foreach (var d in (List<Doctor>)ViewBag.Doctors)
+                    {
+                        <option value="@d.Id" selected="@(d.Id == Model.DoctorId)">@d.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Date Issued</label>
+                <input type="date" name="DateIssued" class="form-control" value="@Model.DateIssued.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-label mb-0">Medicines</label>
+                    <button type="button" class="btn btn-secondary btn-sm" data-add-prescription-item><i class="fa-solid fa-plus"></i> Add medicine</button>
+                </div>
+                <div data-prescription-items data-next-index="@items.Count">
+                    <div data-prescription-item-list>
+                        @for (var index = 0; index < items.Count; index++)
+                        {
+                            <div class="prescription-item-row" data-prescription-item-row>
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-md-3"><label class="form-label">Medicine</label><input name="Items[@index].MedicineName" value="@items[index].MedicineName" class="form-control" required /></div>
+                                    <div class="col-md-2"><label class="form-label">Dosage</label><input name="Items[@index].Dosage" value="@items[index].Dosage" class="form-control" required /></div>
+                                    <div class="col-md-2"><label class="form-label">Frequency</label><input name="Items[@index].Frequency" value="@items[index].Frequency" class="form-control" required /></div>
+                                    <div class="col-md-2"><label class="form-label">Duration</label><input name="Items[@index].Duration" value="@items[index].Duration" class="form-control" required /></div>
+                                    <div class="col-md-2"><label class="form-label">Instructions</label><input name="Items[@index].Instructions" value="@items[index].Instructions" class="form-control" /></div>
+                                    <div class="col-md-1"><button type="button" class="btn btn-outline-danger" data-remove-prescription-item aria-label="Remove medicine"><i class="fa-solid fa-trash"></i></button></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Notes</label>
+                <textarea name="Notes" class="form-control">@Model.Notes</textarea>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-check"></i> Save Changes</button>
+    </form>
+</div>
+
+<template id="prescription-item-template">
+    <div class="prescription-item-row" data-prescription-item-row>
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3"><label class="form-label">Medicine</label><input name="Items[__index__].MedicineName" class="form-control" required /></div>
+            <div class="col-md-2"><label class="form-label">Dosage</label><input name="Items[__index__].Dosage" class="form-control" required /></div>
+            <div class="col-md-2"><label class="form-label">Frequency</label><input name="Items[__index__].Frequency" class="form-control" required /></div>
+            <div class="col-md-2"><label class="form-label">Duration</label><input name="Items[__index__].Duration" class="form-control" required /></div>
+            <div class="col-md-2"><label class="form-label">Instructions</label><input name="Items[__index__].Instructions" class="form-control" /></div>
+            <div class="col-md-1"><button type="button" class="btn btn-outline-danger" data-remove-prescription-item aria-label="Remove medicine"><i class="fa-solid fa-trash"></i></button></div>
+        </div>
+    </div>
+</template>

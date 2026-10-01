@@ -1,0 +1,73 @@
+@model Bill
+@{
+    ViewData["Title"] = "Edit Bill";
+}
+
+<div class="page-header">
+    <div><h2 class="page-title">Edit Bill</h2></div>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+</div>
+
+<div class="form-card">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Patient</label>
+                <select name="PatientId" class="form-select" required>
+                    @foreach (var p in (List<Patient>)ViewBag.Patients)
+                    {
+                        <option value="@p.Id" selected="@(p.Id == Model.PatientId)">@p.FullName</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Due Date</label>
+                <input type="date" name="DueDate" class="form-control" value="@(Model.DueDate?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-label mb-0">Bill items</label>
+                    <button type="button" class="btn btn-secondary btn-sm" data-add-bill-item><i class="fa-solid fa-plus"></i> Add item</button>
+                </div>
+                <div data-bill-item-list>
+                    @for (var index = 0; index < Model.Items.Count; index++)
+                    {
+                        <div class="bill-item-row" data-bill-item-row>
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-6"><label class="form-label">Description</label><input name="Items[@index].Description" value="@Model.Items.ElementAt(index).Description" class="form-control" required /></div>
+                                <div class="col-md-2"><label class="form-label">Quantity</label><input name="Items[@index].Quantity" type="number" min="0.01" step="0.01" value="@Model.Items.ElementAt(index).Quantity" class="form-control" required /></div>
+                                <div class="col-md-3"><label class="form-label">Unit price (EGP)</label><input name="Items[@index].UnitPrice" type="number" min="0" step="0.01" value="@Model.Items.ElementAt(index).UnitPrice" class="form-control" required /></div>
+                                <div class="col-md-1"><button type="button" class="btn btn-outline-danger" data-remove-bill-item aria-label="Remove bill item"><i class="fa-solid fa-trash"></i></button></div>
+                            </div>
+                        </div>
+                    }
+                    @if (!Model.Items.Any())
+                    {
+                        <div class="bill-item-row" data-bill-item-row>
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-6"><label class="form-label">Description</label><input name="Items[0].Description" value="@Model.Description" class="form-control" required /></div>
+                                <div class="col-md-2"><label class="form-label">Quantity</label><input name="Items[0].Quantity" type="number" min="0.01" step="0.01" value="1" class="form-control" required /></div>
+                                <div class="col-md-3"><label class="form-label">Unit price (EGP)</label><input name="Items[0].UnitPrice" type="number" min="0" step="0.01" value="@Model.Amount" class="form-control" required /></div>
+                                <div class="col-md-1"><button type="button" class="btn btn-outline-danger" data-remove-bill-item aria-label="Remove bill item"><i class="fa-solid fa-trash"></i></button></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-4"><i class="fa-solid fa-check"></i> Save Changes</button>
+    </form>
+</div>
+
+<template id="bill-item-template">
+    <div class="bill-item-row" data-bill-item-row>
+        <div class="row g-2 align-items-end">
+            <div class="col-md-6"><label class="form-label">Description</label><input name="Items[__index__].Description" class="form-control" required /></div>
+            <div class="col-md-2"><label class="form-label">Quantity</label><input name="Items[__index__].Quantity" type="number" min="0.01" step="0.01" value="1" class="form-control" required /></div>
+            <div class="col-md-3"><label class="form-label">Unit price (EGP)</label><input name="Items[__index__].UnitPrice" type="number" min="0" step="0.01" class="form-control" required /></div>
+            <div class="col-md-1"><button type="button" class="btn btn-outline-danger" data-remove-bill-item aria-label="Remove bill item"><i class="fa-solid fa-trash"></i></button></div>
+        </div>
+    </div>
+</template>

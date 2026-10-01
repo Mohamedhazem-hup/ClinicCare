@@ -1,0 +1,39 @@
+@model List<Bill>
+@{
+    ViewData["Title"] = "My Bills";
+    var totalDue = Model.Sum(b => Math.Max(0, b.Amount - b.Payments.Sum(payment => payment.Amount)));
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">My Bills</h2>
+        <p class="page-subtitle">Outstanding balance: @totalDue.ToString("N2") EGP</p>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Issue Date</th><th>Due Date</th><th>Description</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center text-secondary py-4">No bills yet.</td></tr>
+                }
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td>@b.IssueDate.ToString("dd MMM yyyy")</td>
+                        <td>@(b.DueDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                        <td>@(b.Description ?? "-")</td>
+                        <td>@b.Amount.ToString("N2") EGP</td>
+                        <td>@b.Payments.Sum(payment => payment.Amount).ToString("N2") EGP</td>
+                        <td>@Math.Max(0, b.Amount - b.Payments.Sum(payment => payment.Amount)).ToString("N2") EGP</td>
+                        <td><span class="badge">@b.Status</span></td>
+                        <td><a asp-action="Details" asp-route-id="@b.BillId" class="btn btn-secondary btn-sm">Details</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

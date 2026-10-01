@@ -1,0 +1,75 @@
+@model List<Patient>
+@{
+    ViewData["Title"] = "Patients";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Patients</h2>
+        <p class="page-subtitle">@Model.Count total registered patients</p>
+    </div>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+    {
+        <a asp-action="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Patient</a>
+    }
+</div>
+
+@if (TempData["AccountNotice"] != null)
+{
+    <div class="alert alert-warning">@TempData["AccountNotice"]</div>
+}
+
+<div class="content-card mb-3">
+    <div class="card-body-modern">
+        <form method="get" class="d-flex gap-2">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by name or phone..." style="max-width:320px;" />
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Blood Type</th>
+                    <th>Registered</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center text-secondary py-4">No patients found.</td></tr>
+                }
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td><strong>@p.FullName</strong></td>
+                        <td>@(p.Phone ?? "-")</td>
+                        <td>@(p.Email ?? "-")</td>
+                        <td>@(p.Gender ?? "-")</td>
+                        <td>@(p.BloodType ?? "-")</td>
+                        <td>@p.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-info btn-sm">View</a>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Receptionist"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-secondary btn-sm">Edit</a>
+                                <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this patient?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+@model List<Appointment>
+@{
+    ViewData["Title"] = "Doctor Dashboard";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Good day, @ViewBag.DoctorName</h2>
+        <p class="page-subtitle">Today's schedule · @(((DateTime)ViewBag.Today).ToString("dddd, dd MMM yyyy"))</p>
+    </div>
+    <a asp-controller="Appointments" asp-action="Index" class="btn btn-secondary">All appointments</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="dashboard-card"><span class="text-secondary">Today's appointments</span><h2>@ViewBag.TotalToday</h2></div></div>
+    <div class="col-md-4"><div class="dashboard-card"><span class="text-secondary">Waiting</span><h2>@ViewBag.WaitingCount</h2></div></div>
+    <div class="col-md-4"><div class="dashboard-card"><span class="text-secondary">Completed</span><h2>@ViewBag.CompletedCount</h2></div></div>
+</div>
+
+<div class="table-container">
+    <div class="card-header-modern"><h3>Today's timeline</h3></div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Time</th><th>Patient</th><th>Visit reason</th><th>Duration</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="6" class="text-center text-secondary py-4">No appointments scheduled for today.</td></tr>
+            }
+            @foreach (var appointment in Model)
+            {
+                <tr>
+                    <td>@appointment.AppointmentDate.ToString("HH:mm")</td>
+                    <td>@appointment.Patient?.FullName</td>
+                    <td>@(appointment.Notes ?? "-")</td>
+                    <td>@appointment.DurationMinutes min</td>
+                    <td><span class="badge">@appointment.Status</span></td>
+                    <td class="text-end">
+                        @if (appointment.Status == "Waiting" || appointment.Status == "Checked-In")
+                        {
+                            <form asp-controller="Appointments" asp-action="UpdateStatus" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@appointment.AppointmentId" />
+                                <input type="hidden" name="status" value="@(appointment.Status == "Waiting" ? "Checked-In" : "Completed")" />
+                                <button type="submit" class="btn btn-primary btn-sm">@(appointment.Status == "Waiting" ? "Start visit" : "Complete")</button>
+                            </form>
+                        }
+                        <a asp-controller="Appointments" asp-action="Details" asp-route-id="@appointment.AppointmentId" class="btn btn-secondary btn-sm">Details</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

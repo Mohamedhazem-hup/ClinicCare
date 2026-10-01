@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - ClinicCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="brand-link" style="color:#0f172a;margin-bottom:18px;">
+                <span class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></span>
+                <span class="brand-text">Clinic<span>Care</span></span>
+            </div>
+
+            <h2>Create a patient account</h2>
+            <p class="sub">Book appointments and view your medical records online.</p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger modern-alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>@ViewData.ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage</span>
+                </div>
+            }
+
+            <form method="post" asp-controller="Account" asp-action="Register">
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="fullName" class="form-control" required autofocus />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" required minlength="6" />
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Create Account</button>
+            </form>
+
+            <p class="sub mt-3 mb-0">
+                Already have an account? <a asp-controller="Account" asp-action="Login">Sign in</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
