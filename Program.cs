@@ -7,17 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-var databaseProvider = builder.Configuration["DatabaseProvider"];
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrWhiteSpace(connectionString))
+    throw new InvalidOperationException("Connection string 'DefaultConnection' must be configured.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    if (string.Equals(databaseProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
-        options.UseSqlite(connectionString);
-    else
-        options.UseSqlServer(connectionString);
-});
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     {
