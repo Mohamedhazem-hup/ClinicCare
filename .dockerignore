@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.git/
+**/node_modules/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+appsettings.json
+Docs/
